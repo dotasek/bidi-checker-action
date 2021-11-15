@@ -1,13 +1,10 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Bidi Character Checker'
+description: 'Check a repository for Bidirectional Unicode Characters'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
+  # Insert new inputs here
 outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  time: # execution time
+    description: 'Time required to check repository'
 runs:
   using: 'node12'
   main: 'dist/index.js'
