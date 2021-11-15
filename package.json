@@ -1,7 +1,7 @@
 {
-  "name": "javascript-action",
-  "version": "1.0.0",
-  "description": "JavaScript Action Template",
+  "name": "bidi-checker-action",
+  "version": "1.4.0",
+  "description": "A GitHub action that checks for bi-directional unicode characters.",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",

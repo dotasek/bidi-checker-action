@@ -1,20 +1,29 @@
-# Create a JavaScript Action
+# bidi-checker-action
 
-<p align="center">
-  <a href="https://github.com/actions/javascript-action/actions"><img alt="javscript-action status" src="https://github.com/actions/javascript-action/workflows/units-test/badge.svg"></a>
-</p>
+A GitHub action that checks for bi-directional unicode characters. 
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+---
 
-This template includes tests, linting, a validation workflow, publishing, and versioning guidance.
+## Summary
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+This action recursively checks the contents of the target repository for [Unicode Bidi characters](https://unicode.org/reports/tr9/), and reports a successful run if none are present.
 
-## Create an action from this template
+The checker uses the GITHUB_WORKSPACE environmental variable, defined in the [GitHub Action Environmental Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables). By default, the directory this variable defines is empty, so must be populated via the `actions/checkout` GitHub Action for this checker to function properly. See the example usage below.
 
-Click the `Use this Template` and provide the new repo details for your action
+The checker will ignore the contents of generated .git directories.
 
-## Code in Main
+## Outputs
+
+* Successful run if no bidi characters are present in code.
+* Failed run if bidi characters are present in code.
+
+## Additional Outputs
+
+## `time`
+
+The time in ms required to scan the repository.
+
+## Building
 
 Install the dependencies
 
@@ -27,42 +36,20 @@ Run the tests :heavy_check_mark:
 ```bash
 $ npm test
 
+ ...
+
  PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+  ✓ test valid-project (449 ms)
+  ✓ test invalid-project (84 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.76 s
+Ran all test suites.
 ...
 ```
 
-## Change action.yml
-
-The action.yml defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-const core = require('@actions/core');
-...
-
-async function run() {
-  try {
-      ...
-  }
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
 
 ## Package for distribution
 
@@ -97,20 +84,48 @@ git commit -a -m "v1 release"
 git push origin v1
 ```
 
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
-
 Your action is now published! :rocket:
 
 See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
 
 ## Usage
 
-You can now consume the action by referencing the v1 branch
-
+You can now consume the action by including the following yml configutation in the `.github/workflows` directory of your project.
+  
 ```yaml
-uses: actions/javascript-action@v1
-with:
-  milliseconds: 1000
-```
+# Bidi Checker Action
+
+name: BIDI CHECK
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  bidi_checker_job:
+    runs-on: ubuntu-latest
+    name: Check for bidi unicode characters in repo
+    steps:
+      # Checkout the repo code. IMPORTANT, this step is needed to populate the directory defined by GITHUB_WORKSPACE
+      - name: Checkout repo
+        uses: actions/checkout@v1
+        id: checkout
+      # Run the check for bidi characters.
+      - name: Check for bidi characters
+        id: bidi_check
+        uses: HL7/bidi-checker-action@v1.4
+        with: # Placeholder for input parameters
+      # Report check runtime in ms
+      - name: Get the output time
+        run: echo "The time was ${{ steps.bidi_check.outputs.time }}"
+
+  ```
 
 See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
