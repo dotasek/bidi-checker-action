@@ -1,8 +1,8 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const path = require('path')
-const fs = require('fs');
-const readline = require('readline');
+import core from '@actions/core';
+import { context } from '@actions/github';
+import path from 'path';
+import fs from 'fs';
+import readline from 'readline';
 
 const FILE_IGNORE_REGEX = [
   '^\.git'
@@ -13,7 +13,7 @@ const ignorePath = (inputFile) => {
   const inputPath = path.resolve(inputFile);
 
   const relativePath = path.relative(fullPath, inputPath);
-  for (regex of FILE_IGNORE_REGEX) {
+  for (const regex of FILE_IGNORE_REGEX) {
     if (new RegExp(regex).test(relativePath)) {
       return true;
     }
@@ -105,7 +105,7 @@ async function run() {
     const startTime = (new Date()).getTime();
   
     // Get the JSON webhook payload for the event that triggered the workflow
-    const payload = JSON.stringify(github.context.payload, undefined, 2)
+    const payload = JSON.stringify(context.payload, undefined, 2)
     console.log(`github.context.payload: ${payload}`);
     console.log('');
   

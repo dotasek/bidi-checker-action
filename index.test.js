@@ -1,7 +1,9 @@
-const process = require('process');
-const cp = require('child_process');
-const path = require('path');
-const { fail } = require('assert');
+import cp from 'child_process';
+import path from 'path';
+import { fail } from 'assert';
+import { fileURLToPath } from 'url';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 
 // shows how the runner will run a javascript action with env / stdout protocol
